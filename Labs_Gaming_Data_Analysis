@@ -1,0 +1,16 @@
+import boto3
+import pandas
+
+s3 = boto3.client('s3')
+bucket = 'gameing-analytics-seung'
+prefix = 'gamelog/gamelog_sagemaker/'
+response = s3.list_objects_v2(Bucket = bucket, Prefix = prefix)
+
+objs = []
+
+for obj in response['Contents']:
+    objs.append(obj['Key'])
+
+game_data = pandas.concat([pandas.read_csv('s3://' + bucket + '/' + obj, delimiter = ',') for obj in objs])
+
+
